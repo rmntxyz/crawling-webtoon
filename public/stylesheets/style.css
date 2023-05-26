@@ -1132,19 +1132,32 @@ body {
 
 .container main {
   flex-grow: 1;
+  padding: 2rem;
 }
 
 .container .column {
-  padding: 1rem;
   overflow-y: auto;
 }
 
+.container aside div.controls {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.container aside ul.list {
+}
+
 .container aside input.search {
-  width: 180px;
+  width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.5rem;
-  margin-bottom: 1rem;
 }
 
 .container aside button.sort {
@@ -1153,7 +1166,6 @@ body {
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.5rem;
-  margin-bottom: 1rem;
   cursor: pointer;
 }
 
@@ -1166,10 +1178,23 @@ body {
   cursor: pointer;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
 }
 
-.container aside ul li span:nth-child(2) {
-  padding-left: 1rem;
+.container aside ul li span.author {
+  display: block;
+  color: #888;
+  font-size: 0.6rem;
+}
+
+.container aside ul li span.rating {
+  display: inline-block;
+  margin-left: 1rem;
+  border-radius: 5px;
+  padding: 2px 5px 0;
+  border: 1px solid #ccc;
+  background-color: #fff;
 }
 
 .container aside ul li.star100 {
@@ -1212,8 +1237,8 @@ body {
     -45deg,
     transparent,
     transparent 1rem,
-    #ccc 1rem,
-    #ccc 2rem
+    #eee 1rem,
+    #eee 2rem
   );
   background-size: 200% 200%;
   animation: barberpole 10s linear infinite;
@@ -1223,4 +1248,9 @@ body {
   100% {
     background-position: 100% 100%;
   }
+}
+
+::highlight(search-result-highlight) {
+  background-color: yellow;
+  color: black;
 }
