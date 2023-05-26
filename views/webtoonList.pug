@@ -1,0 +1,14 @@
+//- // Path: public/index.pug
+
+//- // 1. 서버에서 받은 json 파일을 이용해서 웹툰 리스트를 표시한다.
+html.markdown-body
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    h1= title
+    ul
+      each webtoon in webtoonData
+        li
+          a(href=`/webtoon/${webtoon.id}`) #{webtoon.title}
+          //- a(href='/webtoon/{webtoon.id}') #{webtoon.title}
