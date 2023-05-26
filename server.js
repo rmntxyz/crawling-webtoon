@@ -5,7 +5,7 @@ import { getJsonFromFile } from "./util.js";
 import { MARKDOWN_PATH, WEBTOON_DATA_JSON_FILENAME } from "./constants.js";
 
 const app = express();
-const port = 3737;
+const port = process.env.PORT || 3737;
 
 app.use(express.static("public"));
 app.use("/scripts", express.static("node_modules"));
