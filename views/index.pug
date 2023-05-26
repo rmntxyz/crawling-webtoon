@@ -11,12 +11,15 @@ html
       aside#webtoonList.column
         div.controls
           input.search(placeholder="Search")
-          button.sort.asc(data-sort="rating" data-default-order="desc") Sort
+          button.sort(data-sort="fav" data-default-order="desc") Fav
+          button.sort.asc(data-sort="rating" data-default-order="desc") Rating
         ul.list
           each webtoon in webtoonData
             li(class=`star${webtoon.step}` data-id=`${webtoon.id}`)
-              span.title #{webtoon.title}
-                span.author #{webtoon.author}
+              span
+                i.fav.fa-star
+                span.title #{webtoon.title}
+                  span.author #{webtoon.author}
               span.rating #{webtoon.rating}
       main.column
         div.wrapper.markdown-body

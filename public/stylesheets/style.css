@@ -1150,7 +1150,19 @@ body {
   border-bottom: 1px solid #ccc;
 }
 
-.container aside ul.list {
+.container aside ul.list i.fa-star {
+  width: 12px;
+  height: 12px;
+  margin-right: 7px;
+  display: inline-block;
+  background: url(/images/star-off.png) no-repeat center center / 12px 12px;
+  /* hide text */
+  text-indent: 100%;
+  overflow: hidden;
+}
+
+.container aside ul.list i.fa-star.active {
+  background: url(/images/star-on.png) no-repeat center center / 12px 12px;
 }
 
 .container aside input.search {
@@ -1161,8 +1173,7 @@ body {
 }
 
 .container aside button.sort {
-  width: 50px;
-  margin-left: 1rem;
+  margin-left: 0.3rem;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.5rem;
@@ -1182,9 +1193,21 @@ body {
   border-bottom: 1px solid #ccc;
 }
 
+.container aside ul li span {
+  display: flex;
+  align-items: center;
+}
+
+.container aside ul li span.title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .container aside ul li span.author {
   display: block;
   color: #888;
+  margin: 2px 0 0 1px;
   font-size: 0.6rem;
 }
 
