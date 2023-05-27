@@ -2,9 +2,9 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import { getJsonFromFile } from "./util.js";
 import {
-  N_COMICS_DOMAIN,
-  N_LIST_PATH,
-  N_DETAIL_PATH,
+  COMICS_DOMAIN,
+  LIST_PATH,
+  DETAIL_PATH,
   WEBTOON_DATA_JSON_FILENAME,
   START_PAGE,
   END_PAGE,
@@ -55,7 +55,9 @@ const getFirstWebtoon = async (page) => {
 const getWebtoonInfo = async (page) => {
   const webtoonInfo = await page.evaluate(() => {
     const info = document.querySelector("#content > div");
-    const thumbnail = info.querySelector("button > div > img").src;
+    const thumbnail = info.querySelector("button")
+      ? info.querySelector("button > div > img").src
+      : info.querySelector("div > img").src;
     const title = info.querySelector("div > h2").innerText;
     const author = info.querySelector("div > div > span > a").innerText;
     const authorLink = info.querySelector("div > div > span > a").href;
@@ -94,11 +96,21 @@ const getWebtoonData = async (page, data) => {
       // 지상최대공모전 filter
       if (webtoon.querySelector("a > div > div > i > svg") !== null) {
         const id = webtoon.querySelector("a").href.split("=")[1];
+
+        let viewCount = webtoon.querySelector(
+          "div > div > span:nth-child(2) > span"
+        ).innerText;
+
+        if (viewCount.includes(",")) {
+          viewCount = viewCount.replace(",", "");
+        }
+
+        if (viewCount.includes("만")) {
+          viewCount = viewCount.replace("만", "") * 10000;
+        }
+
         const rating = webtoon.querySelector(
           "div > div > span > span"
-        ).innerText;
-        const viewCount = webtoon.querySelector(
-          "div > div > span:nth-child(2) > span"
         ).innerText;
         const step = [100, 99, 98, 96, 94, 92, 90, 70, 40, 0].find(
           (n) => n <= Number(rating) * 10
@@ -123,10 +135,10 @@ const getWebtoonData = async (page, data) => {
     console.log(`start to scrap webtoon ${id}`);
 
     try {
-      await goto(eachPage, `${N_COMICS_DOMAIN}/${N_LIST_PATH}?titleId=${id}`);
+      await goto(eachPage, `${COMICS_DOMAIN}/${LIST_PATH}?titleId=${id}`);
       const webtoonInfo = await getWebtoonInfo(eachPage);
 
-      await goto(eachPage, `${N_COMICS_DOMAIN}/${N_DETAIL_PATH}?titleId=${id}`);
+      await goto(eachPage, `${COMICS_DOMAIN}/${DETAIL_PATH}?titleId=${id}`);
       const firstWebtoon = await getFirstWebtoon(eachPage);
 
       data[id] = {
@@ -136,7 +148,8 @@ const getWebtoonData = async (page, data) => {
         ...firstWebtoon,
       };
     } catch (e) {
-      console.error(id);
+      console.error(`Error is accured while scrapping ${id}`, e);
+      throw e;
     }
   }
   eachPage.close();
@@ -166,7 +179,7 @@ const main = async () => {
 
       await goto(
         page,
-        `${N_COMICS_DOMAIN}/challenge?tab=total&sortType=update&page=${i}`
+        `${COMICS_DOMAIN}/challenge?tab=total&sortType=update&page=${i}`
       );
 
       await getWebtoonData(page, webtoonData);

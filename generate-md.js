@@ -1,10 +1,10 @@
 import fs from "fs";
 import { getJsonFromFile } from "./util.js";
 import {
+  COMICS_DOMAIN,
   MARKDOWN_PATH,
   WEBTOON_DATA_JSON_FILENAME,
-  N_COMICS_DOMAIN,
-  N_LIST_PATH,
+  LIST_PATH,
 } from "./constants.js";
 import { removeMarkdownFiles } from "./util.js";
 
@@ -19,13 +19,18 @@ const generateMdFiles = (webtoonData) => {
     const mdFile = [];
 
     mdFile.push(
-      `# [${webtoon.title}](${N_COMICS_DOMAIN}/${N_LIST_PATH}?titleId=${webtoon.id})`
+      `# [${webtoon.title}](${COMICS_DOMAIN}/${LIST_PATH}?titleId=${webtoon.id})`
     );
     mdFile.push(`![thumbnail](${webtoon.thumbnail})`);
     mdFile.push("");
     mdFile.push(`## Author`);
     mdFile.push(`- [${webtoon.author}](${webtoon.authorLink})`);
     mdFile.push("");
+    if (webtoon.state) {
+      mdFile.push(`## State`);
+      mdFile.push(`- ***${webtoon.state}***`);
+      mdFile.push("");
+    }
     mdFile.push(`## Rating`);
     mdFile.push(`- ${webtoon.rating}`);
     mdFile.push("");
@@ -39,13 +44,23 @@ const generateMdFiles = (webtoonData) => {
     mdFile.push(`> ${webtoon.description}`);
     mdFile.push("");
     if (webtoon.replies.length > 0) {
-      mdFile.push(`## Replies (Ep.1)`);
+      mdFile.push(`## Replies (Latest Episode)`);
       for (let reply of webtoon.replies) {
         mdFile.push(`- ${reply}`);
       }
     }
     mdFile.push("");
-    mdFile.push(`## Episode 1`);
+    if (webtoon.interest) {
+      mdFile.push(`## Interest`);
+      mdFile.push(`- ${webtoon.interest}`);
+      mdFile.push("");
+    }
+    if (webtoon.firstEpTitle) {
+      mdFile.push(`## First Episode`);
+      mdFile.push(`- [${webtoon.firstEpTitle}](${webtoon.firstEpLink})`);
+      mdFile.push("");
+    }
+    mdFile.push(`## Latest Episode`);
     for (let image of webtoon.images) {
       mdFile.push(`![image](${image})`);
       mdFile.push("");

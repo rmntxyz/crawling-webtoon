@@ -10,6 +10,7 @@ window.onload = function () {
   const wrapper = document.querySelector(".wrapper");
 
   let selected = null;
+  let isBest = window.location.pathname === "/best";
 
   async function selectWebtoon(event) {
     let li = event.target;
@@ -18,7 +19,11 @@ window.onload = function () {
     }
 
     const id = li.dataset.id;
-    const res = await fetch(`/webtoon/${id}`);
+    let url = `/webtoon/${id}`;
+    if (isBest) {
+      url += "?best=true";
+    }
+    const res = await fetch(url);
     const html = await res.text();
     wrapper.innerHTML = html;
 
@@ -38,7 +43,8 @@ window.onload = function () {
 
   // 즐겨찾기 기능
   const storage = window.localStorage;
-  const data = storage.getItem("webtoon_favorite");
+  const itemName = isBest ? "best_favorite" : "webtoon_favorite";
+  const data = storage.getItem(itemName);
   const favorite = JSON.parse(data) || [];
   const setFavorite = (id) => {
     const index = favorite.indexOf(id);
@@ -47,7 +53,7 @@ window.onload = function () {
     } else {
       favorite.splice(index, 1);
     }
-    storage.setItem("webtoon_favorite", JSON.stringify(favorite));
+    storage.setItem(itemName, JSON.stringify(favorite));
   };
 
   const stars = document.querySelectorAll("ul.list i.fa-star");

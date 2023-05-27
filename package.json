@@ -7,9 +7,13 @@
   "scripts": {
     "start": "node server.js",
     "scrap": "node scrap.js",
+    "scrap-best": "BUILD_TYPE=best node scrap-best.js",
     "gen-md": "node generate-md.js",
+    "gen-md-best": "BUILD_TYPE=best node generate-md.js",
+    "clean-md": "ONLY_MD=true node clean.js",
+    "clean-md-best": "ONLY_MD=true BUILD_TYPE=best node clean.js",
     "clean": "node clean.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean-best": "BUILD_TYPE=best node clean.js"
   },
   "author": "",
   "license": "ISC",

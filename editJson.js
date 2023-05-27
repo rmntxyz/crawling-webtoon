@@ -16,13 +16,14 @@ const main = () => {
 
   for (let key in webtoonData) {
     const countText = webtoonData[key].viewCount;
-    let count;
+    let count = countText;
+
+    if (countText.includes(",")) {
+      count = count.replace(",", "");
+    }
+
     if (countText.includes("만")) {
-      count = countText.replace("만", "") * 10000;
-    } else if (countText.includes(",")) {
-      count = countText.replace(",", "");
-    } else {
-      count = countText;
+      count = count.replace("만", "") * 10000;
     }
 
     webtoonData[key].viewCount = count;
