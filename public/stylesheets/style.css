@@ -1127,7 +1127,7 @@ body {
 
 .container aside {
   flex-shrink: 0;
-  flex-basis: 300px;
+  flex-basis: 400px;
 }
 
 .container main {
@@ -1139,10 +1139,31 @@ body {
   overflow-y: auto;
 }
 
-.container aside div.controls {
+.container aside div.aside-top {
   position: sticky;
   top: 0;
+  color: #999;
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.container aside div.aside-top-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1rem 0;
+}
+
+.container aside div.result {
+  font-size: 0.8rem;
+}
+
+.container aside div.result #searchedNum {
+  font-weight: bold;
+}
+
+.container aside div.controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1163,6 +1184,10 @@ body {
 
 .container aside ul.list i.fa-star.active {
   background: url(/images/star-on.png) no-repeat center center / 12px 12px;
+}
+
+.container aside .hidden {
+  display: none;
 }
 
 .container aside input.search {
@@ -1211,14 +1236,31 @@ body {
   font-size: 0.6rem;
 }
 
-.container aside ul li span.rating {
+.container aside ul li span.author svg {
+  margin: 0 2px 0 10px;
+}
+
+.container aside ul li span.view {
   display: inline-block;
-  margin-left: 1rem;
+}
+
+.container aside ul li span.number-box {
+  margin-left: 0.2rem;
   border-radius: 5px;
   padding: 2px 5px 0;
   border: 1px solid #ccc;
-  background-color: #fff;
+  background-color: #ffffff99;
 }
+.container aside ul li span.rating {
+}
+
+/*
+연한 라임 그린: #C0FF8C
+살구색: #FFB382
+라벤더: #B592FF
+연한 분홍색: #FFD4E5
+청록 블루: #82D8FF
+*/
 
 .container aside ul li.star100 {
   background-color: #96e7c688;

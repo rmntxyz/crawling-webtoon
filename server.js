@@ -13,13 +13,17 @@ app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "pug");
 
 const webtoonData = getJsonFromFile(WEBTOON_DATA_JSON_FILENAME);
+const webtoons = Object.values(webtoonData);
+webtoons.sort((a, b) => {
+  return a.index - b.index;
+});
 
 app.get("/", (req, res) => {
-  res.render("index", { webtoonData });
+  res.render("index", { webtoons });
 });
 
 app.get("/webtoon", (req, res) => {
-  res.render("webtoonList", { webtoonData });
+  res.render("webtoonList", { webtoons });
 });
 
 app.get("/webtoon/:id", (req, res) => {

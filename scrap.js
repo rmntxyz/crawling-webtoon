@@ -6,11 +6,12 @@ import {
   N_LIST_PATH,
   N_DETAIL_PATH,
   WEBTOON_DATA_JSON_FILENAME,
-  MARKDOWN_PATH,
   START_PAGE,
   END_PAGE,
 } from "./constants.js";
 import { filesize } from "filesize";
+
+let counter = 1;
 
 // https://www.urlbox.io/puppeteer-wait-for-page-load
 const goto = async (page, url, options = {}) => {
@@ -40,16 +41,12 @@ const getFirstWebtoon = async (page) => {
       replies.push(reply.innerText);
     }
 
-    const rating =
-      document.querySelector(
-        "#viewerView > div > div > div > div > button:nth-child(3) > span > span"
-      ).innerText || 0;
+    // const rating =
+    //   document.querySelector(
+    //     "#viewerView > div > div > div > div > button:nth-child(3) > span > span"
+    //   ).innerText || 0;
 
-    const step = [100, 99, 98, 96, 94, 92, 90, 70, 40, 0].find(
-      (n) => n <= Number(rating) * 10
-    );
-
-    return { images, replies, rating, step };
+    return { images, replies /* rating, step */ };
   });
 
   return result;
@@ -57,16 +54,16 @@ const getFirstWebtoon = async (page) => {
 
 const getWebtoonInfo = async (page) => {
   const webtoonInfo = await page.evaluate(() => {
-    const listInfo = document.querySelector("#content > div");
-    const thumbnail = listInfo.querySelector("button > div > img").src;
-    const title = listInfo.querySelector("div > h2").innerText;
-    const author = listInfo.querySelector("div > div > span > a").innerText;
-    const authorLink = listInfo.querySelector("div > div > span > a").href;
-    const genre = listInfo
+    const info = document.querySelector("#content > div");
+    const thumbnail = info.querySelector("button > div > img").src;
+    const title = info.querySelector("div > h2").innerText;
+    const author = info.querySelector("div > div > span > a").innerText;
+    const authorLink = info.querySelector("div > div > span > a").href;
+    const genre = info
       .querySelector("div > div > span:nth-child(2)")
       .innerText.split("\n")
       .pop();
-    const description = listInfo.querySelector(
+    const description = info.querySelector(
       "div > div > div:nth-child(3) > p"
     ).innerText;
 
@@ -86,47 +83,62 @@ const getWebtoonInfo = async (page) => {
 const getWebtoonData = async (page, data) => {
   const browser = page.browser();
 
-  const webtoonIds = await page.evaluate(() => {
+  const webtoonList = await page.evaluate(() => {
     // ul selector is #content > div:nth-child(2) > ul
-    const webtoonList = document.querySelectorAll(
+    const webtoons = document.querySelectorAll(
       "#content > div:nth-child(2) > ul > li"
     );
-    const ids = [];
+    const list = [];
 
-    for (let webtoon of webtoonList) {
-      const titleId = webtoon.querySelector("a").href.split("=")[1];
-
+    for (let webtoon of webtoons) {
       // 지상최대공모전 filter
       if (webtoon.querySelector("a > div > div > i > svg") !== null) {
-        ids.push(titleId);
+        const id = webtoon.querySelector("a").href.split("=")[1];
+        const rating = webtoon.querySelector(
+          "div > div > span > span"
+        ).innerText;
+        const viewCount = webtoon.querySelector(
+          "div > div > span:nth-child(2) > span"
+        ).innerText;
+        const step = [100, 99, 98, 96, 94, 92, 90, 70, 40, 0].find(
+          (n) => n <= Number(rating) * 10
+        );
+
+        list.push({ id, rating, viewCount, step });
       }
     }
 
-    return ids;
+    return list;
   });
 
   const eachPage = await browser.newPage();
 
-  for (let id of webtoonIds) {
-    if (data[id] || ["810804", "810170", "810173"].includes(id)) {
+  for (let listInfo of webtoonList) {
+    const { id } = listInfo;
+
+    if (data[id]) {
       continue;
     }
 
     console.log(`start to scrap webtoon ${id}`);
 
-    await goto(eachPage, `${N_COMICS_DOMAIN}/${N_LIST_PATH}?titleId=${id}`);
-    const webtoonInfo = await getWebtoonInfo(eachPage);
+    try {
+      await goto(eachPage, `${N_COMICS_DOMAIN}/${N_LIST_PATH}?titleId=${id}`);
+      const webtoonInfo = await getWebtoonInfo(eachPage);
 
-    await goto(eachPage, `${N_COMICS_DOMAIN}/${N_DETAIL_PATH}?titleId=${id}`);
-    const firstWebtoon = await getFirstWebtoon(eachPage);
+      await goto(eachPage, `${N_COMICS_DOMAIN}/${N_DETAIL_PATH}?titleId=${id}`);
+      const firstWebtoon = await getFirstWebtoon(eachPage);
 
-    data[id] = {
-      id,
-      ...webtoonInfo,
-      ...firstWebtoon,
-    };
+      data[id] = {
+        index: counter++,
+        ...listInfo,
+        ...webtoonInfo,
+        ...firstWebtoon,
+      };
+    } catch (e) {
+      console.error(id);
+    }
   }
-
   eachPage.close();
 };
 
@@ -138,48 +150,6 @@ const saveWebtoonData = (webtoonData) => {
   console.info(filesize(stats.size, { round: 0 }));
 };
 
-const createMdFiles = (webtoonData) => {
-  const webtoons = Object.values(webtoonData);
-
-  for (let webtoon of webtoons) {
-    if (fs.existsSync(`${MARKDOWN_PATH}/${webtoon.id}.md`)) {
-      continue;
-    }
-
-    const mdFile = [];
-
-    mdFile.push(`# ${webtoon.title}`);
-    mdFile.push(`![thumbnail](${webtoon.thumbnail})`);
-    mdFile.push("");
-    mdFile.push(`## Author`);
-    mdFile.push(`- [${webtoon.author}](${webtoon.authorLink})`);
-    mdFile.push("");
-    mdFile.push(`## Genre`);
-    mdFile.push(`- ${webtoon.genre}`);
-    mdFile.push("");
-    mdFile.push(`## Description`);
-    mdFile.push(`> ${webtoon.description}`);
-    mdFile.push("");
-    if (webtoon.replies.length > 0) {
-      mdFile.push(`## Replies (Ep.1)`);
-      for (let reply of webtoon.replies) {
-        mdFile.push(`- ${reply}`);
-      }
-    }
-    mdFile.push("");
-    mdFile.push(`## Rating (Ep.1)`);
-    mdFile.push(`- ${webtoon.rating}`);
-    mdFile.push("");
-    mdFile.push(`## Episode 1`);
-    for (let image of webtoon.images) {
-      mdFile.push(`![image](${image})`);
-      mdFile.push("");
-    }
-
-    fs.writeFileSync(`${MARKDOWN_PATH}/${webtoon.id}.md`, mdFile.join("\n"));
-  }
-};
-
 const main = async () => {
   //headless: false, slowMo: 100
   const browser = await puppeteer.launch({
@@ -188,6 +158,7 @@ const main = async () => {
 
   const page = await browser.newPage();
   const webtoonData = getJsonFromFile(WEBTOON_DATA_JSON_FILENAME);
+  counter = Object.keys(webtoonData).length + 1;
 
   try {
     for (let i = START_PAGE; i <= END_PAGE; i++) {
@@ -199,14 +170,11 @@ const main = async () => {
       );
 
       await getWebtoonData(page, webtoonData);
-
       saveWebtoonData(webtoonData);
     }
 
     await browser.close();
-    createMdFiles(webtoonData);
   } catch (e) {
-    console.error(e);
     await browser.close();
     saveWebtoonData(webtoonData);
   }

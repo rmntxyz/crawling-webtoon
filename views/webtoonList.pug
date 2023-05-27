@@ -8,7 +8,7 @@ html.markdown-body
   body
     h1= title
     ul
-      each webtoon in webtoonData
+      each webtoon in webtoons
         li
           a(href=`/webtoon/${webtoon.id}`) #{webtoon.title}
           //- a(href='/webtoon/{webtoon.id}') #{webtoon.title}

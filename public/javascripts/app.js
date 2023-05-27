@@ -1,7 +1,7 @@
 window.onload = function () {
   // 검색 기능
   const options = {
-    valueNames: ["title", "author", "rating", "fav"],
+    valueNames: ["title", "author", "index", "view", "rating", "fav"],
   };
   const list = new List("webtoonList", options);
 
@@ -81,6 +81,36 @@ window.onload = function () {
   });
   list.reIndex();
 
+  // 결과 표시 기능
+  const total = document.querySelector("#total");
+  const totalNum = document.querySelector("#totalNum");
+  const searched = document.querySelector("#searched");
+  const searchedNum = document.querySelector("#searchedNum");
+  const searchedSuffix = document.querySelector("#searchedSuffix");
+  const notFound = document.querySelector("#notFound");
+  const totalCount = webtoonList.length;
+  totalNum.innerHTML = totalCount;
+  searchedSuffix.innerHTML = ` / ${totalCount} searched`;
+
+  function updateResult() {
+    const current = document.querySelectorAll("#webtoonList > ul > li").length;
+    if (current === 0) {
+      total.classList.add("hidden");
+      searched.classList.add("hidden");
+      notFound.classList.remove("hidden");
+    } else if (current === totalCount) {
+      total.classList.remove("hidden");
+      searched.classList.add("hidden");
+      notFound.classList.add("hidden");
+    } else {
+      searchedNum.innerHTML = current;
+      total.classList.add("hidden");
+      searched.classList.remove("hidden");
+      notFound.classList.add("hidden");
+    }
+  }
+  updateResult();
+
   // 검색 하이라이트 기능
   const query = document.querySelector("input.search");
   const main = document.querySelector("ul.list");
@@ -97,6 +127,8 @@ window.onload = function () {
   query.addEventListener("input", () => {
     setTimeout(() => {
       CSS.highlights.clear();
+
+      updateResult();
 
       const str = query.value.trim().toLowerCase();
       if (!str) {
