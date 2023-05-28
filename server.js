@@ -31,10 +31,13 @@ bestWebtoons.sort((a, b) => {
 
 const md = markdownIt();
 
+const chall = { name: "지상 최대 공모전", location: "/" };
+const best = { name: "베스트도전 ", location: "/best" };
+
 app.get("/", (req, res) => {
   res.render("index", {
     webtoons: chalWebtoons,
-    category: "지상 최대 공모전",
+    categories: [chall, best],
     date: "23.05.27",
   });
 });
@@ -42,7 +45,7 @@ app.get("/", (req, res) => {
 app.get("/best", (req, res) => {
   res.render("index", {
     webtoons: bestWebtoons,
-    category: "베스트 도전",
+    categories: [best, chall],
     date: "23.05.28",
     hasState: true,
   });

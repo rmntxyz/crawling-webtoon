@@ -11,8 +11,11 @@ html
       aside#webtoonList.column
         div.aside-top
           div.aside-top-info
-            div.date #{date} 기준
-            div.category #{category} 
+            div.category
+              select#selectBox
+                each cate in categories
+                  option(value=`${cate.location}`) #{cate.name}
+              div.date (#{date} 기준)
             div.result
               span#total total: 
                 span#totalNum 0

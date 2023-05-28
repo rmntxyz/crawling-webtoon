@@ -1155,8 +1155,19 @@ body {
   padding: 1rem 1rem 0;
 }
 
+.container aside div.category {
+  display: flex;
+  align-items: center;
+}
+
+.container aside #selectBox {
+  font-size: 1.2rem;
+}
+
 .container aside div.date {
-  min-width: 120px;
+  font-size: 0.8rem;
+  margin-left: 5px;
+  color: #999;
 }
 
 .container aside div.result {

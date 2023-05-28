@@ -1,4 +1,12 @@
 window.onload = function () {
+  // 카테고리
+  const category = document.querySelector("#selectBox");
+
+  selectBox.addEventListener("change", function () {
+    var path = selectBox.value;
+    window.location = path;
+  });
+
   // 검색 기능
   const options = {
     valueNames: ["title", "author", "state", "index", "view", "rating", "fav"],
