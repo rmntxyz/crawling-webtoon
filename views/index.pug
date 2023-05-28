@@ -11,18 +11,20 @@ html
       aside#webtoonList.column
         div.aside-top
           div.aside-top-info
+            div.date #{date} 기준
+            div.category #{category} 
             div.result
-              span#total.hidden total: 
+              span#total total: 
                 span#totalNum 0
               span#searched.hidden
                 span#searchedNum 0
                 span#searchedSuffix / 0 searched
               span#notFound.hidden result not found
-            div.category #{category} 
-            div 23.05.27 기준
           div.controls
             input.search(placeholder="Search")
             button.sort(data-sort="fav") Fav
+            if hasState
+              button.sort.asc(data-sort="state" data-default-order="desc") State
             button.sort.asc(data-sort="index" data-default-order="desc") Idx
             button.sort.asc(data-sort="view" data-default-order="desc") View
             button.sort.asc(data-sort="rating" data-default-order="desc") Rating
@@ -40,7 +42,9 @@ html
                     span.view #{webtoon.viewCount}
               span.index.hidden #{webtoon.index}
               span
-                span.rating.number-box #{webtoon.rating}
+                if webtoon.state
+                  span.state.text-box #{webtoon.state}
+                span.rating.text-box #{webtoon.rating}
       main.column
         div.wrapper.markdown-body
 

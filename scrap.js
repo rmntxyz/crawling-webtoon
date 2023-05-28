@@ -129,6 +129,7 @@ const getWebtoonData = async (page, data) => {
     const { id } = listInfo;
 
     if (data[id]) {
+      data[id].index = counter++;
       continue;
     }
 
@@ -171,7 +172,6 @@ const main = async () => {
 
   const page = await browser.newPage();
   const webtoonData = getJsonFromFile(WEBTOON_DATA_JSON_FILENAME);
-  counter = Object.keys(webtoonData).length + 1;
 
   try {
     for (let i = START_PAGE; i <= END_PAGE; i++) {

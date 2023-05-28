@@ -1,7 +1,7 @@
 window.onload = function () {
   // 검색 기능
   const options = {
-    valueNames: ["title", "author", "index", "view", "rating", "fav"],
+    valueNames: ["title", "author", "state", "index", "view", "rating", "fav"],
   };
   const list = new List("webtoonList", options);
 

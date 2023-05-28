@@ -5,7 +5,7 @@ export const BEST_LIST_PATH = "bestChallenge/list";
 export const BEST_MARKDOWN_PATH = "public/markdown-best";
 export const BEST_WEBTOON_DATA_JSON_FILENAME = "bestWebtoonData";
 export const BEST_START_PAGE = 1;
-export const BEST_END_PAGE = 10;
+export const BEST_END_PAGE = 100;
 
 export const CHAL_DETAIL_PATH = "challenge/detail";
 export const CHAL_LIST_PATH = "challenge/list";

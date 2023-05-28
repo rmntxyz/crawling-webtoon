@@ -35,11 +35,17 @@ app.get("/", (req, res) => {
   res.render("index", {
     webtoons: chalWebtoons,
     category: "지상 최대 공모전",
+    date: "23.05.27",
   });
 });
 
 app.get("/best", (req, res) => {
-  res.render("index", { webtoons: bestWebtoons, category: "베스트 도전" });
+  res.render("index", {
+    webtoons: bestWebtoons,
+    category: "베스트 도전",
+    date: "23.05.28",
+    hasState: true,
+  });
 });
 
 app.get("/webtoon", (req, res) => {
