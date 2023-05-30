@@ -18,7 +18,12 @@ window.onload = function () {
   const wrapper = document.querySelector(".wrapper");
 
   let selected = null;
-  let isBest = window.location.pathname === "/best";
+  let cate =
+    window.location.pathname === "/best"
+      ? "best"
+      : window.location.pathname === "/drop"
+      ? "drop"
+      : "";
 
   async function selectWebtoon(event) {
     let li = event.target;
@@ -28,8 +33,8 @@ window.onload = function () {
 
     const id = li.dataset.id;
     let url = `/webtoon/${id}`;
-    if (isBest) {
-      url += "?best=true";
+    if (cate) {
+      url += `?${cate}=true`;
     }
     const res = await fetch(url);
     const html = await res.text();

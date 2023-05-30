@@ -7,6 +7,8 @@ import {
   CHAL_WEBTOON_DATA_JSON_FILENAME,
   BEST_MARKDOWN_PATH,
   BEST_WEBTOON_DATA_JSON_FILENAME,
+  DROP_MARKDOWN_PATH,
+  DROP_WEBTOON_DATA_JSON_FILENAME,
 } from "./constants.js";
 
 const app = express();
@@ -29,15 +31,22 @@ bestWebtoons.sort((a, b) => {
   return a.index - b.index;
 });
 
+const dropWebtoonData = getJsonFromFile(DROP_WEBTOON_DATA_JSON_FILENAME);
+const dropWebtoons = Object.values(dropWebtoonData);
+dropWebtoons.sort((a, b) => {
+  return a.index - b.index;
+});
+
 const md = markdownIt();
 
 const chall = { name: "지상 최대 공모전", location: "/" };
 const best = { name: "베스트도전 ", location: "/best" };
+const drop = { name: "공모전 드랍", location: "/drop" };
 
 app.get("/", (req, res) => {
   res.render("index", {
     webtoons: chalWebtoons,
-    categories: [chall, best],
+    categories: [chall, best, drop],
     date: "23.05.27",
   });
 });
@@ -45,9 +54,17 @@ app.get("/", (req, res) => {
 app.get("/best", (req, res) => {
   res.render("index", {
     webtoons: bestWebtoons,
-    categories: [best, chall],
+    categories: [best, chall, drop],
     date: "23.05.28",
     hasState: true,
+  });
+});
+
+app.get("/drop", (req, res) => {
+  res.render("index", {
+    webtoons: dropWebtoons,
+    categories: [drop, best, chall],
+    date: "23.05.30",
   });
 });
 
@@ -57,8 +74,13 @@ app.get("/webtoon", (req, res) => {
 
 app.get("/webtoon/:id", (req, res) => {
   const id = req.params.id;
-  const { best } = req.query;
-  let mdPath = best === "true" ? BEST_MARKDOWN_PATH : CHAL_MARKDOWN_PATH;
+  const { best, drop } = req.query;
+  let mdPath =
+    best === "true"
+      ? BEST_MARKDOWN_PATH
+      : drop === "true"
+      ? DROP_MARKDOWN_PATH
+      : CHAL_MARKDOWN_PATH;
 
   const webtoonFile = matter.read(`${mdPath}/${id}.md`);
 
