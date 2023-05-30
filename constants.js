@@ -14,7 +14,7 @@ export const CHAL_WEBTOON_DATA_JSON_FILENAME = "webtoonData";
 export const CHAL_START_PAGE = 1;
 export const CHAL_END_PAGE = 51;
 
-export const DROP_MARKDOWN_PATH = "public/markdown-drop-best";
+export const DROP_MARKDOWN_PATH = "public/markdown-drop";
 export const DROP_WEBTOON_DATA_JSON_FILENAME = "dropWebtoonData";
 export const DROP_START_PAGE = 1;
 export const DROP_END_PAGE = 20;
