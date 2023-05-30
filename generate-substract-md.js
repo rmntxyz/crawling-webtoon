@@ -74,7 +74,7 @@ const generateMdFiles = (webtoonData) => {
 };
 
 const main = () => {
-  removeMarkdownFiles();
+  removeMarkdownFiles(DROP_MARKDOWN_PATH);
   const webtoonData = getJsonFromFile(DROP_WEBTOON_DATA_JSON_FILENAME);
   generateMdFiles(webtoonData);
 };

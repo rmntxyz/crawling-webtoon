@@ -6,9 +6,9 @@ export const getJsonFromFile = (filename) => {
   return JSON.parse(data);
 };
 
-export const removeMarkdownFiles = () => {
-  fs.readdirSync(MARKDOWN_PATH).forEach((file) => {
-    fs.unlinkSync(`${MARKDOWN_PATH}/${file}`);
+export const removeMarkdownFiles = (path) => {
+  fs.readdirSync(path).forEach((file) => {
+    fs.unlinkSync(`${path}/${file}`);
   });
 };
 
