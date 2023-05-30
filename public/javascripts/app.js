@@ -56,7 +56,7 @@ window.onload = function () {
 
   // 즐겨찾기 기능
   const storage = window.localStorage;
-  const itemName = isBest ? "best_favorite" : "webtoon_favorite";
+  const itemName = cate === "best" ? "best_favorite" : "webtoon_favorite";
   const data = storage.getItem(itemName);
   const favorite = JSON.parse(data) || [];
   const setFavorite = (id) => {
