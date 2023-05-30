@@ -41,7 +41,9 @@ const getWebtoonData = async (page, data) => {
       delete data[id];
     }
   }
-  // console.log(Object.values(data).length);
+  console.log(
+    `find: ${webtoonList.length}, rest: ${Object.values(data).length}`
+  );
 };
 
 const saveWebtoonData = (webtoonData) => {
@@ -76,6 +78,7 @@ const main = async () => {
 
     await browser.close();
   } catch (e) {
+    console.log(e);
     await browser.close();
     saveWebtoonData(webtoonData);
   }
